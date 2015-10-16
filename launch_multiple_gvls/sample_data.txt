@@ -1,0 +1,23 @@
+bucket_default: cloudman-gvl-400
+initial_cluster_type: Galaxy
+galaxy_data_option: transient
+gvl_config: { install : ['gvl_cmdline_utilities'] }
+post_start_script_url: 'file:///opt/gvl/scripts/triggers;file:///mnt/galaxy/gvl/poststart.d'
+cluster_templates:
+  - name: Galaxy
+    filesystem_templates:
+    - name: galaxy
+      type: transient
+      roles: galaxyTools,galaxyData
+      data_source: archive
+      archive_url: https://swift.rc.nectar.org.au:8888/v1/AUTH_377/cloudman-gvl-400/gvl-galaxyfs-4.0.0.tar.gz
+      archive_md5: b4c822ec2494fca9810d0d127d7b6722
+    - name: galaxyIndices
+      type: transient
+      roles: galaxyIndices
+      archive_url: https://swift.rc.nectar.org.au:8888/v1/AUTH_377/cloudman-gvl-400/gvl-indices-tutorial-4.0.0.tar.gz
+      archive_md5: 4b360787af3672a2f20ab0ce961912bc
+  - name: Data
+    filesystem_templates:
+    - name: galaxy
+      type: volume
