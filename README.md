@@ -3,18 +3,12 @@
 This repository is meant to contain otherwise uncategorised but useful
 support scripts/programs for the GVL.
 
-### Launch Multiple GVLs
+#### Launch Multiple GVLs
 
 This script can be used to launch multiple gvls in one go for training workshops.
 
     $ cd <your work dir>
     $ git clone https://github.com/gvlproject/gvl.utilities
-    $ cd gvl.utilities/launch_multiple_gvls
-    $ virtualenv .
-    $ source bin/activate
-    $ pip install -r requirements.txt
-    $ python launch_gvl.py --help
-
 
 Example:
 
@@ -60,7 +54,7 @@ Example:
     $ virtualenv .
     $ source bin/activate
     $ pip install -r requirements.txt
-    $ python shed_tool_conf_to_yaml.py -a <access_key> -s <secret_key> -i ami-000035ef -z melbourne-qh2 -p <pass> -u sample_data.txt -c GVLWorkshop -n 5
+    $ python shed_tool_conf_to_yaml.py -f /mnt/galaxy/galaxy-app/config/shed_tool_conf.xml
 
 Usage:
 
