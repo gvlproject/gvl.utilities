@@ -16,7 +16,7 @@ def launch_gvl(access_key, secret_key, image_id, zone,
     cloud_metadata = Bunch(id='1',  # for compatibility w/ DB representation
                            name="NeCTAR",
                            cloud_type="openstack",
-                           bucket_default="cloudman-os",
+                           bucket_default="cloudman-gvl-400",
                            region_name="melbourne",
                            region_endpoint="nova.rc.nectar.org.au",
                            ec2_port=8773,
