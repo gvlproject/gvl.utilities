@@ -1,0 +1,6 @@
+[devstack_server]
+<instance_ip>
+
+[devstack_server:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=<path_to_your_private_ssh_key>

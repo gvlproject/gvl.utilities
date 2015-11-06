@@ -1,0 +1,50 @@
+- name: Update apt packages
+  apt: update_cache=yes
+
+- name: Upgrade distribution
+  apt: upgrade=dist
+
+- name: Install some common base packages
+  apt: name={{ item }} state=latest
+  with_items:
+   - git
+   - python-pip
+   - python-virtualenv
+
+- name: Install ntp
+  apt: name=ntp state=latest
+  tags: ntp
+
+- name: Start the ntp service
+  service: name=ntp state=started enabled=true
+  tags: ntp
+
+- name: Install fail2ban
+  apt: name=fail2ban state=latest
+  tags: ntp
+
+
+# Actual devstack stuff
+
+- name: Create devstack directory
+  file:
+    path: '/opt/devstack'
+    state: 'directory'
+    owner: "ubuntu"
+    group: 'ubuntu'
+    mode: '0755'
+
+- name: Checkout application source
+  git: repo=https://git.openstack.org/openstack-dev/devstack dest=/opt/devstack accept_hostkey=yes
+  sudo: yes
+  sudo_user: ubuntu
+
+- name: Copy the local.conf file
+  template: src=local.j2 dest=/opt/devstack/local.conf
+  sudo: yes
+  sudo_user: ubuntu
+
+- name: Run stack.sh
+  command: ./stack.sh chdir=/opt/devstack
+  sudo: yes
+  sudo_user: ubuntu

@@ -1,0 +1,6 @@
+# Playbook to deploy devstack on a target instance.
+
+- hosts: devstack_server
+  sudo: yes
+  roles:
+    - role: devstack
