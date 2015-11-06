@@ -36,15 +36,16 @@
 
 - name: Checkout application source
   git: repo=https://git.openstack.org/openstack-dev/devstack dest=/opt/devstack accept_hostkey=yes
-  sudo: yes
-  sudo_user: ubuntu
 
 - name: Copy the local.conf file
   template: src=local.j2 dest=/opt/devstack/local.conf
-  sudo: yes
-  sudo_user: ubuntu
 
 - name: Run stack.sh
   command: ./stack.sh chdir=/opt/devstack
-  sudo: yes
-  sudo_user: ubuntu
+  ignore_errors: yes
+
+ - name: Unstack it
+  command: ./unstack.sh chdir=/opt/devstack
+
+- name: Stack it again
+  command: ./stack.sh chdir=/opt/devstack
