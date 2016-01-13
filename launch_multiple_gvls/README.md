@@ -31,5 +31,7 @@ Usage:
 	                        Name of cluster
 	  -n NUM_INSTANCES, --num_instances NUM_INSTANCES
 	                        Number of instances to launch
+	  -j JOBS, --jobs JOBS
+                            Maximum number of instances to launch in parallel
 
 The user data file specified with the -u option must contain the necessary flavour data to boot the instance, copied from the GVL Launcher.

@@ -1,2 +1,2 @@
 pyyaml
-bioblend
+bioblend==0.6.1

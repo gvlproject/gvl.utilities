@@ -1,11 +1,16 @@
 import argparse
+from functools import partial
 import logging
+import multiprocessing
 import sys
 
 from bioblend.cloudman import CloudManConfig
 from bioblend.cloudman import CloudManInstance
 from bioblend.util import Bunch
 import yaml
+
+
+POOL_SIZE = 10
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
@@ -42,12 +47,26 @@ def launch_gvl(access_key, secret_key, image_id, zone,
     return CloudManInstance.launch_instance(cfg)
 
 
+def dispatch_instance(access_key, secret_key, image_id, zone,
+                      instance_type, cluster_name, password, user_data_file,
+                      inst_id):
+    instance_name = "{0}-{1}".format(cluster_name, inst_id)
+    log.info("Launching instance %s", instance_name)
+    launch_gvl(access_key, secret_key, image_id, zone, instance_type,
+               instance_name, password,
+               user_data_file)
+
+
 def launch_gvl_instances(access_key, secret_key, image_id, zone,
                          instance_type, cluster_name, password, user_data_file,
-                         num_instances):
-    for x in xrange(num_instances):
-        launch_gvl(access_key, secret_key, image_id, zone, instance_type,
-                   "{0}-{1}".format(cluster_name, x), password, user_data_file)
+                         num_instances, jobs):
+    pool = multiprocessing.Pool(jobs)
+
+    func = partial(dispatch_instance, access_key, secret_key, image_id, zone,
+                   instance_type, cluster_name, password, user_data_file)
+    pool.map(func, xrange(num_instances))
+    pool.close()
+    pool.join()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -74,9 +93,12 @@ if __name__ == "__main__":
         required=False, default="GVL")
     parser.add_argument(
         '-n', '--num_instances', type=int,
-        help="Number of instances to launch", required=False, default=1)
+        help="Total number of instances to launch", required=False, default=1)
+    parser.add_argument(
+        '-j', '--jobs', type=int,
+        help="Maximum number of instances to launch in parallel", required=False, default=POOL_SIZE)
     args = parser.parse_args()
 
     launch_gvl_instances(
         args.ak, args.sk, args.image, args.zone, args.type, args.cluster_name,
-        args.password, args.user_data_file, args.num_instances)
+        args.password, args.user_data_file, args.num_instances, args.jobs)
