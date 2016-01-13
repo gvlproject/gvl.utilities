@@ -1,9 +1,16 @@
 import argparse
+import logging
+import sys
 
 from bioblend.cloudman import CloudManConfig
 from bioblend.cloudman import CloudManInstance
 from bioblend.util import Bunch
 import yaml
+
+logging.basicConfig(stream=sys.stdout)
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+logging.getLogger('bioblend').setLevel(logging.DEBUG)
 
 
 def launch_gvl(access_key, secret_key, image_id, zone,
