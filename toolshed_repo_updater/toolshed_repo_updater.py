@@ -11,6 +11,9 @@
 #
 #   @Author: Simon Gladman, 2016
 #
+#   TO DO:  1.  Set the toolshed to query be determined by the toolshed key in
+#               the yaml objects
+#
 ################################################################################
 
 #Imports
@@ -28,6 +31,7 @@ debug = False
 
 #Commandline arguments
 parser = argparse.ArgumentParser()
+parser.add_argument('-v','--verbose', help='Verbose output to STDERR', default=False, required=False, action="store_true")
 parser.add_argument('-i', '--input', help="Input file name", required=True)
 parser.add_argument('-o','--output', help='Output file name', required=True)
 
@@ -38,7 +42,7 @@ stream=open(args.input, 'r')
 tools = yaml.load_all(stream)
 whole_yaml=tools.next()
 
-if debug:
+if args.verbose:
     print whole_yaml
 
 tool_list=whole_yaml['tools']
