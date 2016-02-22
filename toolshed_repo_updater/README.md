@@ -9,11 +9,12 @@ Example:
 
 Usage:
 
-      usage: toolshed_repo_updater.py [-h] -i INPUT -o OUTPUT
+      usage: toolshed_repo_updater.py [-h] [-v] -i INPUT -o OUTPUT
 
       optional arguments:
       -h, --help            show this help message and exit
-
+      -v, --verbose         Verbose output to STDERR
+      
       required arguments:
       -i INPUT, --input INPUT
                         Input file name
