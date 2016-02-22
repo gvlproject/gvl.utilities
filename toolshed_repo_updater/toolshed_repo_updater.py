@@ -27,8 +27,6 @@ import argparse
 ts = toolshed.ToolShedInstance(url='https://toolshed.g2.bx.psu.edu')
 tts = toolshed.ToolShedInstance(url='https://testtoolshed.g2.bx.psu.edu')
 
-debug = False
-
 #Commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-v','--verbose', help='Verbose output to STDERR', default=False, required=False, action="store_true")
