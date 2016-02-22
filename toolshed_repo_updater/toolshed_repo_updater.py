@@ -20,7 +20,6 @@ tool_list=[]
 
 for tool in tools:
     tool_list=tool['tools']
-tool_list
 
 print("Tool\tOwner\tCurrent\tLatest")
 counter = 0
@@ -44,5 +43,7 @@ for item in tool_list:
         time.sleep(5)
         counter = 0
 
+tools['tools'] = tool_list
+
 with open(args.output, "w") as outfile:
-    yaml.dump(tool_list, outfile, default_flow_style=False)
+    yaml.dump(tools, outfile, default_flow_style=False)
