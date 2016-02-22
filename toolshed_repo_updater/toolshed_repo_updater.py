@@ -16,10 +16,11 @@ tts = toolshed.ToolShedInstance(url='https://testtoolshed.g2.bx.psu.edu')
 
 stream=open(args.input, 'r')
 tools = yaml.load_all(stream)
-tool_list=[]
+whole_yaml=tools.next()
 
-for tool in tools:
-    tool_list=tool['tools']
+print whole_yaml
+
+tool_list=whole_yaml['tools']
 
 print("Tool\tOwner\tCurrent\tLatest")
 counter = 0
@@ -40,10 +41,10 @@ for item in tool_list:
 
     counter += 1
     if counter == 20:
-        time.sleep(5)
+        time.sleep(10)
         counter = 0
 
-tools['tools'] = tool_list
+whole_yaml['tools'] = tool_list
 
 with open(args.output, "w") as outfile:
-    yaml.dump(tools, outfile, default_flow_style=False)
+    yaml.dump(whole_yaml, outfile, default_flow_style=False)
