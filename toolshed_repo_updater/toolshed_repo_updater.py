@@ -1,32 +1,53 @@
 #!/usr/bin/env python
 
+################################################################################
+#
+#   toolshed_repo_updater.py
+#
+#   A script to take in a toolshed tool yaml file (from the
+#   ansible-galaxy-tools scripts), check their revisions against the appropriate
+#   toolshed, report any tools that have been updated and write out a new yaml
+#   file.
+#
+#   @Author: Simon Gladman, 2016
+#
+################################################################################
+
+#Imports
 from bioblend import toolshed
 import time
 import yaml
 import argparse
 
+
+#Toolshed variables. (ATM the script is only configured for the main and test toolshed.)
+ts = toolshed.ToolShedInstance(url='https://toolshed.g2.bx.psu.edu')
+tts = toolshed.ToolShedInstance(url='https://testtoolshed.g2.bx.psu.edu')
+
+debug = False
+
+#Commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help="Input file name", required=True)
 parser.add_argument('-o','--output', help='Output file name', required=True)
 
 args = parser.parse_args()
 
-ts = toolshed.ToolShedInstance(url='https://toolshed.g2.bx.psu.edu')
-tts = toolshed.ToolShedInstance(url='https://testtoolshed.g2.bx.psu.edu')
-
+#Read the input yaml file
 stream=open(args.input, 'r')
 tools = yaml.load_all(stream)
 whole_yaml=tools.next()
 
-print whole_yaml
+if debug:
+    print whole_yaml
 
 tool_list=whole_yaml['tools']
 
+#Loop through the tools and check their versions using bioblend's toolshed get_ordered_installable_revisions method
 print("Tool\tOwner\tCurrent\tLatest")
 counter = 0
 for item in tool_list:
 
-    tool_key = item['name']+'::'+item['owner']
     old_version=item.get('revision', 'unknown')
     new_version = "unknown"
 
@@ -38,13 +59,15 @@ for item in tool_list:
     if old_version != new_version:
         print "%s\t%s\t%s\t%s" % (item['name'], item['owner'], old_version, new_version)
         item['revision'] = new_version
-
+    #Counter stuff here to make sure we don't poll the toolshed rest api too frequently (risk of timeouts).
     counter += 1
     if counter == 20:
         time.sleep(10)
         counter = 0
 
+#Rewrite new tool_list with updated versions to yaml var.
 whole_yaml['tools'] = tool_list
 
+#Write out the new yaml file with updated versions.
 with open(args.output, "w") as outfile:
     yaml.dump(whole_yaml, outfile, default_flow_style=False)
