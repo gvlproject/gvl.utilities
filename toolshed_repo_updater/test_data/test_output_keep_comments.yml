@@ -8,7 +8,7 @@ tools:
 
 - name: package_freetype_2_4
   owner: iuc
-  revision: 90e515a1abe2
+  revision: b32452aa80dc
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: package_libcurl_7_35
@@ -19,5 +19,10 @@ tools:
 - name: package_trinityrnaseq_2013_08_14
   owner: jjohnson
   revision: 9be1cbdae115
+  tool_panel_section_id: getext
+  tool_shed_url: https://toolshed.g2.bx.psu.edu
+- name: package_r_3_1_2
+  owner: iuc
+  revision: 4d2fd1413b56
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu

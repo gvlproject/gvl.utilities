@@ -16,3 +16,8 @@ tools:
   revision: 9be1cbdae115
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu
+- name: package_r_3_1_2
+  owner: iuc
+  revision: !!python/unicode '4d2fd1413b56'
+  tool_panel_section_id: getext
+  tool_shed_url: https://toolshed.g2.bx.psu.edu
