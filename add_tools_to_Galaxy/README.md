@@ -83,12 +83,15 @@ You'll need to use the `install_tool_shed_tools.py` script for this. For each to
 Example command:
   ```
   python scripts/api/install_tool_shed_tools.py \
-    -g 127.0.0.1:8080 \
+    -l http://127.0.0.1:8080 \
     -a 63bef48cbcf13ca9fe56c1f0a6558def \
     --name package_r_3_1_2 \
     --owner iuc \
-    --toolshed https://toolshed.g2.bx.psu.edu \
-    --section textutil
+    -u https://toolshed.g2.bx.psu.edu \
+    --panel-section-id textutil \
+    --repository-deps \
+    --tool-deps
+    -r changeset_revision
   ```
 
   where `-a` is the api key we recorded earlier and `--section` is the section in the tool menu you want this tool to appear in.
