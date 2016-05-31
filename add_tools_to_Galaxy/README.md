@@ -2,32 +2,24 @@
 
 This set of instructions show how to:
 
-  * Create a virtualenv with the required python libraries
+  * Copy the manage_bootstrap_user.py file
   * Setup a admin user for the Galaxy server via the command line.
   * Get the user's api key
   * Add tools via the commandline
   * Delete the admin user from the database
 
 
-## 1. Create the virtualenv
+## 1. Copy the bootstrap user script
 
   1. ssh to the server as ubuntu user.
-  2. Make sure you're in the directory with tool_management python scripts.
+  2. Clone this repo.
   ```
-  install_tool_shed_tools.py
-  install_workflow.py
-  manage_bootstrap_user.py
+  git clone https://github.com/gvlproject/gvl.utilities.git
   ```
-  3. They are usually located at: `/mnt/galaxy/galaxy-app/scripts/api/`. If `manage_bootstrap_user.py` is not there, you'll need to copy it from this git repo to that location.
-  4. Run the following commands to set up the virtualenv:
-
+  3. Copy the `manage_bootstrap_user.py` script to the correct place.
   ```
   sudo su galaxy
-  virtualenv venvtemp
-  source venvtemp/bin/activate
-  pip install bioblend
-  pip install pyyaml
-  exit
+  cp gvl.utilities/add_tools_to_Galaxy/manage_bootstrap_user.py /mnt/galaxy/galaxy-app/scripts/api/
   ```
 
 ## 2. Setup an admin user
@@ -72,8 +64,9 @@ This set of instructions show how to:
 
   ```
   sudo su galaxy
-  source venvtemp/bin/activate
-  python manage_bootstrap_user.py \
+  cd /mnt/galaxy/galaxy-app
+  source .venv/bin/activate
+  python scripts/api/manage_bootstrap_user.py \
     -c /mnt/galaxy/galaxy-app/config/galaxy.ini \
     create \
     -e <email> \
@@ -89,7 +82,7 @@ You'll need to use the `install_tool_shed_tools.py` script for this. For each to
 
 Example command:
   ```
-  install_tool_shed_tools.py \
+  python scripts/api/install_tool_shed_tools.py \
     -g 127.0.0.1:8080 \
     -a 63bef48cbcf13ca9fe56c1f0a6558def \
     --name package_r_3_1_2 \
@@ -122,8 +115,9 @@ Once you have finished installing and repairing tools and you no longer require 
 
   ```
   sudo su galaxy
-  source venvtemp/bin/activate
-  python manage_bootstrap_user.py \
+  cd /mnt/galaxy/galaxy-app
+  source .venv/bin/activate
+  python scripts/api/manage_bootstrap_user.py \
     -c /mnt/galaxy/galaxy-app/config/galaxy.ini \
     delete \
     --username <username>
