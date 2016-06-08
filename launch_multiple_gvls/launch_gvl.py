@@ -15,7 +15,10 @@ POOL_SIZE = 10
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-logging.getLogger('bioblend').setLevel(logging.DEBUG)
+
+
+def enable_debugging():
+    logging.getLogger('bioblend').setLevel(logging.DEBUG)
 
 
 def launch_gvl(access_key, secret_key, image_id, zone,
@@ -96,8 +99,15 @@ if __name__ == "__main__":
         help="Total number of instances to launch", required=False, default=1)
     parser.add_argument(
         '-j', '--jobs', type=int,
-        help="Maximum number of instances to launch in parallel", required=False, default=POOL_SIZE)
+        help="Maximum number of instances to launch in parallel",
+        required=False, default=POOL_SIZE)
+    parser.add_argument(
+        '-d', '--debug', type=bool,
+        help="Enable debug output", required=False, default=False)
     args = parser.parse_args()
+
+    if args.debug:
+        enable_debugging()
 
     launch_gvl_instances(
         args.ak, args.sk, args.image, args.zone, args.type, args.cluster_name,
