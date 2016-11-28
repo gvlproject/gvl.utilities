@@ -9,7 +9,7 @@
 #   toolshed, report any tools that have been updated and write out a new yaml
 #   file.
 #
-#   @Author: Simon Gladman, 2016
+#   @Author: Simon Gladman, 2016. Modified by Madison Flannery, 2016.
 #
 #   TO DO:  1.  Set the toolshed to query be determined by the toolshed key in
 #               the yaml objects
@@ -45,8 +45,11 @@ if args.verbose:
 
 tool_list=whole_yaml['tools']
 
+# Output variables.
+updated_tools = "--- UPDATED TOOLS ---\nTool\tOwner\tLatest\n"
+deprecated_tools = "--- DEPRECATED TOOLS ---\nTool\tOwner\n"
+
 #Loop through the tools and check their versions using bioblend's toolshed get_ordered_installable_revisions method
-print("Tool\tOwner\tLatest")
 counter = 0
 for item in tool_list:
     # Delete the 'revision' key if exists.
@@ -63,13 +66,18 @@ for item in tool_list:
     # Get new version revision.
     if "test" in item['tool_shed_url']:
         new_version = tts.repositories.get_ordered_installable_revisions(item['name'], item['owner'])[-1]
+        is_deprecated = tts.repositories.get_repository_revision_install_info(item['name'], item['owner'], new_version)[0].get('deprecated', False)
     else:
         new_version = ts.repositories.get_ordered_installable_revisions(item['name'], item['owner'])[-1]
+        is_deprecated = ts.repositories.get_repository_revision_install_info(item['name'], item['owner'], new_version)[0].get('deprecated', False)
 
-    # Only do something if we haven't seen this revision before.
+    # If tool is deprecated, add to string for stdout.
+    if is_deprecated:
+        deprecated_tools += "{0}\t{1}\t\n".format(item['name'], item['owner'])
+
+    # Add and print revision if we haven't seen it before.
     if new_version not in item['revisions']:
-        print "%s\t%s\t%s" % (item['name'], item['owner'], new_version)
-        # Delete old key, and make list of revisions containing old and new versions.
+        updated_tools += "{0}\t{1}\t{2}\n".format(item['name'], item['owner'], new_version)
         item['revisions'].append(new_version)
 
     # Counter stuff here to make sure we don't poll the toolshed rest api too frequently (risk of timeouts).
@@ -77,6 +85,10 @@ for item in tool_list:
     if counter == 20:
         time.sleep(10)
         counter = 0
+
+# Print stdout.
+print(updated_tools + "\n")
+print(deprecated_tools + "\n")
 
 #Rewrite new tool_list with updated versions to yaml var.
 whole_yaml['tools'] = tool_list

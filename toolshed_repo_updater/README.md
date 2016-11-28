@@ -1,6 +1,6 @@
 ## toolshed_repo_updater.py
 
-This script will take in the yaml file of toolshed tools to be installed and checks their revisions. It prints --> stdout a tab delimited list of tools that have newer revisions in the appropriate toolshed. It also outputs a yaml file of the tools to be installed with all of the revisions updated.
+This script will take in the yaml file of toolshed tools to be installed and checks their revisions. It prints --> stdout a tab delimited list of tools that have newer revisions in the appropriate toolshed, and a tab delimited list of tools that have been deprecated. It also outputs a yaml file of the tools to be installed with all of the revisions updated.
 
 Example:
 
