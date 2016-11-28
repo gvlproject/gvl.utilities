@@ -31,7 +31,6 @@ tts = toolshed.ToolShedInstance(url='https://testtoolshed.g2.bx.psu.edu')
 parser = argparse.ArgumentParser()
 parser.add_argument('-v','--verbose', help='Verbose output to STDERR', default=False, required=False, action="store_true")
 parser.add_argument('-i', '--input', help="Input file name", required=True)
-parser.add_argument('-s', '--sed-file', help="Output sed script file", required=False)
 parser.add_argument('-o','--output', help='Output file name', required=True)
 
 args = parser.parse_args()
@@ -49,7 +48,6 @@ tool_list=whole_yaml['tools']
 #Loop through the tools and check their versions using bioblend's toolshed get_ordered_installable_revisions method
 print("Tool\tOwner\tLatest")
 counter = 0
-sed_output = []
 for item in tool_list:
     # Delete the 'revision' key if exists.
     old_version=item.pop('revision', 'unknown')
@@ -86,8 +84,3 @@ whole_yaml['tools'] = tool_list
 #Write out the new yaml file with updated versions.
 with open(args.output, "w") as outfile:
     yaml.dump(whole_yaml, outfile, default_flow_style=False)
-
-#Write out sed script file.
-if args.sed_file:
-    with open(args.sed_file, "w") as f:
-        f.write("\n".join(sed_output) + "\n")
