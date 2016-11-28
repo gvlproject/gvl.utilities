@@ -3,21 +3,27 @@ galaxy_instance: <IP address for target Galaxy instance>
 tools:
 - name: package_freetype_2_4
   owner: iuc
-  revision: !!python/unicode 'b32452aa80dc'
+  revisions:
+  - 90e515a1abe2
+  - !!python/unicode 'b32452aa80dc'
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: package_libcurl_7_35
   owner: iuc
-  revision: 0d934b13250c
+  revisions:
+  - 0d934b13250c
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: package_trinityrnaseq_2013_08_14
   owner: jjohnson
-  revision: 9be1cbdae115
+  revisions:
+  - 9be1cbdae115
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu
 - name: package_r_3_1_2
   owner: iuc
-  revision: !!python/unicode '4d2fd1413b56'
+  revisions:
+  - 9f2fddb9d6e2
+  - !!python/unicode '4d2fd1413b56'
   tool_panel_section_id: getext
   tool_shed_url: https://toolshed.g2.bx.psu.edu

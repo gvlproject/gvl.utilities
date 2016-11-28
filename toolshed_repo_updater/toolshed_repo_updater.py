@@ -47,25 +47,34 @@ if args.verbose:
 tool_list=whole_yaml['tools']
 
 #Loop through the tools and check their versions using bioblend's toolshed get_ordered_installable_revisions method
-print("Tool\tOwner\tCurrent\tLatest")
+print("Tool\tOwner\tLatest")
 counter = 0
 sed_output = []
 for item in tool_list:
+    # Delete the 'revision' key if exists.
+    old_version=item.pop('revision', 'unknown')
 
-    old_version=item.get('revision', 'unknown')
+    # Create 'revisions' if need be, append old version if exists.
+    if 'revisions' not in item.keys():
+        item['revisions'] = []
+        if old_version != 'unknown':
+            item['revisions'].append(old_version)
+
     new_version = "unknown"
 
+    # Get new version revision.
     if "test" in item['tool_shed_url']:
         new_version = tts.repositories.get_ordered_installable_revisions(item['name'], item['owner'])[-1]
     else:
         new_version = ts.repositories.get_ordered_installable_revisions(item['name'], item['owner'])[-1]
 
-    if old_version != new_version:
-        print "%s\t%s\t%s\t%s" % (item['name'], item['owner'], old_version, new_version)
-        item['revision'] = new_version
-        if old_version != "unknown":
-            sed_output.append("s/%s/%s/g" % (old_version, new_version))
-    #Counter stuff here to make sure we don't poll the toolshed rest api too frequently (risk of timeouts).
+    # Only do something if we haven't seen this revision before.
+    if new_version not in item['revisions']:
+        print "%s\t%s\t%s" % (item['name'], item['owner'], new_version)
+        # Delete old key, and make list of revisions containing old and new versions.
+        item['revisions'].append(new_version)
+
+    # Counter stuff here to make sure we don't poll the toolshed rest api too frequently (risk of timeouts).
     counter += 1
     if counter == 20:
         time.sleep(10)
