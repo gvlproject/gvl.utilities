@@ -31,7 +31,7 @@ def launch_gvl(access_key, secret_key, image_id, zone,
     cloud_metadata = Bunch(id='1',  # for compatibility w/ DB representation
                            name="NeCTAR",
                            cloud_type="openstack",
-                           bucket_default="cloudman-gvl-400",
+                           bucket_default="cloudman-gvl-420",
                            region_name="melbourne",
                            region_endpoint="nova.rc.nectar.org.au",
                            ec2_port=8773,
@@ -53,7 +53,7 @@ def launch_gvl(access_key, secret_key, image_id, zone,
 def dispatch_instance(access_key, secret_key, image_id, zone,
                       instance_type, cluster_name, password, user_data_file,
                       inst_id):
-    instance_name = "{0}-{1}".format(cluster_name, inst_id)
+    instance_name = "{0}-{1:02d}".format(cluster_name, inst_id)
     log.info("Launching instance %s", instance_name)
     launch_gvl(access_key, secret_key, image_id, zone, instance_type,
                instance_name, password,
@@ -62,12 +62,12 @@ def dispatch_instance(access_key, secret_key, image_id, zone,
 
 def launch_gvl_instances(access_key, secret_key, image_id, zone,
                          instance_type, cluster_name, password, user_data_file,
-                         num_instances, jobs):
+                         num_instances, num_start, jobs):
     pool = multiprocessing.Pool(jobs)
 
     func = partial(dispatch_instance, access_key, secret_key, image_id, zone,
                    instance_type, cluster_name, password, user_data_file)
-    pool.map(func, xrange(num_instances))
+    pool.map(func, xrange(num_start, num_start + num_instances))
     pool.close()
     pool.join()
 
@@ -98,6 +98,10 @@ if __name__ == "__main__":
         '-n', '--num_instances', type=int,
         help="Total number of instances to launch", required=False, default=1)
     parser.add_argument(
+        '-k', '--num_start', type=int,
+        help="Number in the cluster name of the first instance launched",
+        required=False, default=1)
+    parser.add_argument(
         '-j', '--jobs', type=int,
         help="Maximum number of instances to launch in parallel",
         required=False, default=POOL_SIZE)
@@ -111,4 +115,5 @@ if __name__ == "__main__":
 
     launch_gvl_instances(
         args.ak, args.sk, args.image, args.zone, args.type, args.cluster_name,
-        args.password, args.user_data_file, args.num_instances, args.jobs)
+        args.password, args.user_data_file, args.num_instances, args.num_start,
+        args.jobs)
