@@ -1,8 +1,12 @@
 - name: Update apt packages
   apt: update_cache=yes
+  become: true
+  become_user: root
 
 - name: Upgrade distribution
   apt: upgrade=dist
+  become: true
+  become_user: root
 
 - name: Install some common base packages
   apt: name={{ item }} state=latest
@@ -10,18 +14,26 @@
    - git
    - python-pip
    - python-virtualenv
+  become: true
+  become_user: root
 
 - name: Install ntp
   apt: name=ntp state=latest
   tags: ntp
+  become: true
+  become_user: root
 
 - name: Start the ntp service
   service: name=ntp state=started enabled=true
   tags: ntp
+  become: true
+  become_user: root
 
 - name: Install fail2ban
   apt: name=fail2ban state=latest
   tags: ntp
+  become: true
+  become_user: root
 
 
 # Actual devstack stuff
@@ -33,9 +45,11 @@
     owner: "ubuntu"
     group: 'ubuntu'
     mode: '0755'
+  become: true
+  become_user: root
 
 - name: Checkout application source
-  git: repo=https://git.openstack.org/openstack-dev/devstack dest=/opt/devstack accept_hostkey=yes
+  git: repo=https://git.openstack.org/openstack-dev/devstack version="{{ devstack_version }}" dest=/opt/devstack accept_hostkey=yes
 
 - name: Copy the local.conf file
   template: src=local.j2 dest=/opt/devstack/local.conf
@@ -44,7 +58,7 @@
   command: ./stack.sh chdir=/opt/devstack
   ignore_errors: yes
 
- - name: Unstack it
+- name: Unstack it
   command: ./unstack.sh chdir=/opt/devstack
 
 - name: Stack it again
