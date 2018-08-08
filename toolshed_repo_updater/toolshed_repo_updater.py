@@ -64,7 +64,7 @@ for item in tool_list:
     new_version = "unknown"
 
     # Get new version revision.
-    if "test" in item['tool_shed_url']:
+    if "test" in item.get('tool_shed_url', 'https://toolshed.g2.bx.psu.edu/'):
         new_version = tts.repositories.get_ordered_installable_revisions(item['name'], item['owner'])[-1]
         is_deprecated = tts.repositories.get_repository_revision_install_info(item['name'], item['owner'], new_version)[0].get('deprecated', False)
     else:
